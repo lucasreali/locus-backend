@@ -11,6 +11,7 @@ const envSchema = z.object({
 	RESEND_API_KEY: z.string().startsWith("re_"),
 	EMAIL_FROM: z.string(),
 	COOKIE_SECRET: z.string(),
+	GEMINI_API_KEY: z.string(),
 	NODE_ENV: z.string().optional(),
 });
 

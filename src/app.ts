@@ -6,10 +6,12 @@ import {
 } from "fastify-type-provider-zod";
 import { cookiesFp } from "./plugins/cookies";
 import { corsFp } from "./plugins/cors";
+import { multipartFp } from "./plugins/multipart";
 import { rateLimitFp } from "./plugins/rate-limit";
 import { swaggerFp } from "./plugins/swagger";
 import { routes } from "./routes";
 import { errorHandler } from "./shared/middlewares/error-handler";
+
 
 export const build = () => {
 	const app = fastify({
@@ -22,6 +24,7 @@ export const build = () => {
 	app.setErrorHandler(errorHandler);
 
 	app.register(corsFp);
+	app.register(multipartFp);
 	app.register(rateLimitFp);
 	app.register(swaggerFp);
 	app.register(cookiesFp);

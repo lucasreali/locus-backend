@@ -1,6 +1,7 @@
 import { build } from "./app";
 import { env } from "./config/env";
 import "./modules/mail/mail.worker";
+import "./modules/syllabus/syllabus.worker";
 
 const app = build();
 
@@ -11,6 +12,7 @@ const run = async () => {
 		await app.listen({ host, port });
 		console.log(`HTTP server running on port ${port}`);
 		console.log("Mail worker initialized");
+		console.log("Syllabus worker initialized");
 	} catch (error) {
 		app.log.error(error);
 		process.exit();

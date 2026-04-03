@@ -3,6 +3,8 @@ import { emailVerificationController } from "./modules/auth/email-verification/e
 
 import { subjectController } from "./modules/subject/subject.controller";
 import { userController } from "./modules/user/user.controller";
+import { calendarController } from "./modules/calendar/calendar.controller";
+import { syllabusController } from "./modules/syllabus/syllabus.controller";
 import type { FastifyTypeInstance } from "./types";
 
 export const routes = (app: FastifyTypeInstance) => {
@@ -15,4 +17,6 @@ export const routes = (app: FastifyTypeInstance) => {
 
 	app.register(subjectController, { prefix: "/subjects" });
 	app.register(userController, { prefix: "/users" });
+	app.register(calendarController, { prefix: "/calendar" });
+	app.register(syllabusController, { prefix: "/syllabus" });
 };
