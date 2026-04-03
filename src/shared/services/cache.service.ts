@@ -1,4 +1,4 @@
-import { redis } from '@/database/redis';
+import { redis } from "@/database/redis";
 
 export interface CacheOptions {
 	ttl?: number;
@@ -26,13 +26,18 @@ export const cacheService = {
 		}
 	},
 
-	async set(namespace: string, key: string, value: unknown, options?: CacheOptions) {
+	async set(
+		namespace: string,
+		key: string,
+		value: unknown,
+		options?: CacheOptions,
+	) {
 		try {
 			const cacheKey = this._buildKey(namespace, key);
 			const serialized = JSON.stringify(value);
 			const ttl = options?.ttl || 300;
 
-			await redis.set(cacheKey, serialized, 'EX', ttl);
+			await redis.set(cacheKey, serialized, "EX", ttl);
 		} catch (error) {
 			console.error(`Cache SET error for ${namespace}:${key}:`, error);
 		}
@@ -49,26 +54,37 @@ export const cacheService = {
 
 	async invalidatePattern(pattern: string) {
 		try {
-			let cursor = '0';
+			let cursor = "0";
 			do {
-				const [nextCursor, keys] = await redis.scan(cursor, 'MATCH', pattern, 'COUNT', 100);
+				const [nextCursor, keys] = await redis.scan(
+					cursor,
+					"MATCH",
+					pattern,
+					"COUNT",
+					100,
+				);
 				cursor = nextCursor;
 
 				if (keys.length > 0) {
 					await redis.del(...keys);
 				}
-			} while (cursor !== '0');
+			} while (cursor !== "0");
 		} catch (error) {
 			console.error(`Cache INVALIDATE PATTERN error for ${pattern}:`, error);
 		}
 	},
 
 	async invalidateNamespace(namespace: string) {
-		const pattern = this._buildKey(namespace, '*');
+		const pattern = this._buildKey(namespace, "*");
 		await this.invalidatePattern(pattern);
 	},
 
-	async getOrSet(namespace: string, key: string, fetcher: () => any, options?: CacheOptions) {
+	async getOrSet(
+		namespace: string,
+		key: string,
+		fetcher: () => any,
+		options?: CacheOptions,
+	) {
 		const cached = await this.get(namespace, key);
 		if (cached !== null) {
 			return cached;
@@ -77,7 +93,7 @@ export const cacheService = {
 		const value = await fetcher();
 
 		this.set(namespace, key, value, options).catch((err) => {
-			console.error('Failed to cache result:', err);
+			console.error("Failed to cache result:", err);
 		});
 
 		return value;

@@ -1,6 +1,7 @@
 import { authController } from "./modules/auth/core/auth.controller";
 import { emailVerificationController } from "./modules/auth/email-verification/email-verification.controller";
 
+import { subjectController } from "./modules/subject/subject.controller";
 import { userController } from "./modules/user/user.controller";
 import type { FastifyTypeInstance } from "./types";
 
@@ -12,5 +13,6 @@ export const routes = (app: FastifyTypeInstance) => {
 	app.register(authController, { prefix: "/auth" });
 	app.register(emailVerificationController, { prefix: "/auth" });
 
+	app.register(subjectController, { prefix: "/subjects" });
 	app.register(userController, { prefix: "/users" });
 };

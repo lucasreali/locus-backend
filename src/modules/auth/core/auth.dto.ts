@@ -15,7 +15,4 @@ export const authValidateResponse = z.object({
 	id: id,
 });
 
-
-
 export type authLoginRequestStatic = z.infer<typeof authLoginRequest>;
-

@@ -7,7 +7,7 @@ import type { FastifyTypeInstance } from "../types";
 export const swaggerFp = fp(async (app: FastifyTypeInstance) => {
 	app.register(fastifySwagger, {
 		openapi: {
-			info: { title: "Helix", version: "0.0.1" },
+			info: { title: "Locus", version: "0.0.1" },
 			security: [{ CookieAuth: [] }],
 			components: {
 				securitySchemes: {

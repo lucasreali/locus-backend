@@ -25,7 +25,6 @@ export const build = () => {
 	app.register(rateLimitFp);
 	app.register(swaggerFp);
 	app.register(cookiesFp);
-	app.register(rateLimitFp);
 
 	app.register(routes);
 
