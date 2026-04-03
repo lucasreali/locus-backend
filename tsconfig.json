@@ -1,0 +1,31 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"display": "Node 22",
+	"_version": "22.0.0",
+
+	"compilerOptions": {
+		"lib": ["es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator"],
+		"module": "nodenext",
+		"target": "es2022",
+
+		"paths": {
+			"@/*": ["./src/*"]
+		},
+
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"moduleResolution": "node16",
+
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"sourceMap": true,
+		"declaration": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true
+	},
+
+	"include": ["src/**/*"],
+	"exclude": ["node_modules"]
+}
