@@ -33,17 +33,25 @@ export const noteRepository = {
 			.select()
 			.from(noteTable)
 			.where(and(...conditions))
-			.orderBy(desc(noteTable.updatedAt));
+			.orderBy(desc(noteTable.updatedAt))
+			.limit(filters.limit)
+			.offset(filters.offset);
 	},
 
 	async updateById(
 		id: string,
+		userId: string,
 		data: noteUpdateRequestStatic & { updatedAt?: Date },
 	) {
-		await db.update(noteTable).set(data).where(eq(noteTable.id, id));
+		await db
+			.update(noteTable)
+			.set(data)
+			.where(and(eq(noteTable.id, id), eq(noteTable.userId, userId)));
 	},
 
-	async deleteById(id: string) {
-		await db.delete(noteTable).where(eq(noteTable.id, id));
+	async deleteById(id: string, userId: string) {
+		await db
+			.delete(noteTable)
+			.where(and(eq(noteTable.id, id), eq(noteTable.userId, userId)));
 	},
 };

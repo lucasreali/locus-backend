@@ -2,8 +2,8 @@ import { createdAt, id, updatedAt, userId } from "@/shared/dtos";
 import { z } from "zod";
 
 export const noteRequest = z.object({
-	title: z.string().min(1),
-	content: z.string().min(1),
+	title: z.string().min(1).max(255),
+	content: z.string().min(1).max(500000),
 	subjectId: id.nullable().optional(),
 });
 
@@ -25,7 +25,9 @@ export const noteParams = z.object({
 
 export const noteQueryParams = z.object({
 	subjectId: id.optional(),
-	search: z.string().optional(),
+	search: z.string().max(100).optional(),
+	limit: z.coerce.number().int().min(1).max(100).default(50),
+	offset: z.coerce.number().int().min(0).default(0),
 });
 
 export const createNoteSchema = noteResponse;

@@ -17,6 +17,7 @@ export const routes = (app: FastifyTypeInstance) => {
 
 	app.register(subjectController, { prefix: "/subjects" });
 	app.register(userController, { prefix: "/users" });
+	// /calendar mirrors /events — both serve the same endpoints for client flexibility
 	app.register(eventController, { prefix: "/events" });
 	app.register(eventController, { prefix: "/calendar" });
 	app.register(aiController, { prefix: "/ai" });

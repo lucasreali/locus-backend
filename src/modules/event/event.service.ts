@@ -1,4 +1,5 @@
 import { NotFoundError } from '@/shared/errors/NotFoundError';
+import { stripUndefined } from '@/shared/utils/strip-undefined';
 import { v7 } from 'uuid';
 import type { eventRequestStatic, eventUpdateRequestStatic } from './event.dto';
 import { eventRepository } from './event.repository';
@@ -55,19 +56,11 @@ export const eventService = {
             throw new NotFoundError('Event not found');
         }
 
-        const updatedEvent = {
+        const updatedEvent = stripUndefined({
             ...data,
             dueDate:
                 data.dueDate !== undefined ? data.dueDate || null : undefined,
             updatedAt: new Date(),
-        };
-
-        const mutableUpdatedEvent = updatedEvent as Record<string, unknown>;
-
-        Object.keys(updatedEvent).forEach((key) => {
-            if (mutableUpdatedEvent[key] === undefined) {
-                delete mutableUpdatedEvent[key];
-            }
         });
 
         await eventRepository.updateById(eventId, updatedEvent);

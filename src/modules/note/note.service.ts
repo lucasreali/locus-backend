@@ -1,5 +1,6 @@
-import { NotFoundError } from "@/shared/errors/NotFoundError";
 import { subjectRepository } from "@/modules/subject/subject.repository";
+import { NotFoundError } from "@/shared/errors/NotFoundError";
+import { stripUndefined } from "@/shared/utils/strip-undefined";
 import { v7 } from "uuid";
 import type {
 	noteQueryParamsStatic,
@@ -61,26 +62,15 @@ export const noteService = {
 			if (!subject) throw new NotFoundError("Subject not found");
 		}
 
-		const updatedNote = {
+		const updatedNote = stripUndefined({
 			...data,
 			subjectId: data.subjectId !== undefined ? data.subjectId ?? null : undefined,
 			updatedAt: new Date(),
-		};
-
-		const mutableUpdatedNote = updatedNote as Record<string, unknown>;
-
-		Object.keys(mutableUpdatedNote).forEach((key) => {
-			if (mutableUpdatedNote[key] === undefined) {
-				delete mutableUpdatedNote[key];
-			}
 		});
 
-		await noteRepository.updateById(noteId, updatedNote);
+		await noteRepository.updateById(noteId, userId, updatedNote);
 
-		return {
-			...note,
-			...updatedNote,
-		};
+		return { ...note, ...updatedNote };
 	},
 
 	async deleteById(userId: string, noteId: string) {
@@ -90,6 +80,6 @@ export const noteService = {
 			throw new NotFoundError("Note not found");
 		}
 
-		await noteRepository.deleteById(noteId);
+		await noteRepository.deleteById(noteId, userId);
 	},
 };

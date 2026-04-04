@@ -23,5 +23,9 @@ export const notes = pgTable(
 			.notNull()
 			.$onUpdate(() => new Date()),
 	},
-	(table) => [index("notes_user_id_idx").on(table.userId)],
+	(table) => [
+		index("notes_user_id_idx").on(table.userId),
+		index("notes_user_id_updated_at_idx").on(table.userId, table.updatedAt),
+		index("notes_user_id_subject_id_idx").on(table.userId, table.subjectId),
+	],
 );

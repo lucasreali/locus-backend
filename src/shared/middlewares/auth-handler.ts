@@ -1,6 +1,5 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { redis } from "@/database/redis";
-import { userRepository } from "@/modules/user/user.repository";
 import { UnauthorizedError } from "../errors/UnauthorizedError";
 
 interface SessionData {
@@ -38,13 +37,5 @@ export const authHandler = async (req: FastifyRequest, _rep: FastifyReply) => {
 		throw new UnauthorizedError("Session expired");
 	}
 
-	const [user] = await userRepository.findById(session.userId);
-
-	if (!user) {
-		await redis.del(`session:${sessionId}`);
-		await redis.srem(`user:sessions:${session.userId}`, sessionId);
-		throw new UnauthorizedError("User not found");
-	}
-
-	req.user = { id: user.id };
+	req.user = { id: session.userId };
 };

@@ -171,10 +171,11 @@ describe("noteService.findAllByUserId", () => {
 			mockNote,
 		] as FindAllResult);
 
-		const result = await noteService.findAllByUserId(USER_ID, {});
+		const filters = { limit: 50, offset: 0 };
+		const result = await noteService.findAllByUserId(USER_ID, filters);
 
 		expect(result).toEqual([mockNote]);
-		expect(noteRepository.findAllByUserId).toHaveBeenCalledWith(USER_ID, {});
+		expect(noteRepository.findAllByUserId).toHaveBeenCalledWith(USER_ID, filters);
 	});
 
 	it("should return empty array when user has no notes", async () => {
@@ -182,7 +183,10 @@ describe("noteService.findAllByUserId", () => {
 			[] as FindAllResult,
 		);
 
-		const result = await noteService.findAllByUserId(USER_ID, {});
+		const result = await noteService.findAllByUserId(USER_ID, {
+			limit: 50,
+			offset: 0,
+		});
 
 		expect(result).toEqual([]);
 	});
@@ -192,11 +196,13 @@ describe("noteService.findAllByUserId", () => {
 			mockNote,
 		] as FindAllResult);
 
-		await noteService.findAllByUserId(USER_ID, { subjectId: SUBJECT_ID });
+		const filters = { subjectId: SUBJECT_ID, limit: 50, offset: 0 };
+		await noteService.findAllByUserId(USER_ID, filters);
 
-		expect(noteRepository.findAllByUserId).toHaveBeenCalledWith(USER_ID, {
-			subjectId: SUBJECT_ID,
-		});
+		expect(noteRepository.findAllByUserId).toHaveBeenCalledWith(
+			USER_ID,
+			filters,
+		);
 	});
 
 	it("should forward search filter to repository", async () => {
@@ -204,11 +210,13 @@ describe("noteService.findAllByUserId", () => {
 			mockNote,
 		] as FindAllResult);
 
-		await noteService.findAllByUserId(USER_ID, { search: "first" });
+		const filters = { search: "first", limit: 50, offset: 0 };
+		await noteService.findAllByUserId(USER_ID, filters);
 
-		expect(noteRepository.findAllByUserId).toHaveBeenCalledWith(USER_ID, {
-			search: "first",
-		});
+		expect(noteRepository.findAllByUserId).toHaveBeenCalledWith(
+			USER_ID,
+			filters,
+		);
 	});
 });
 
@@ -231,6 +239,7 @@ describe("noteService.updateById", () => {
 		expect(result.updatedAt).toBeInstanceOf(Date);
 		expect(noteRepository.updateById).toHaveBeenCalledWith(
 			NOTE_ID,
+			USER_ID,
 			expect.objectContaining({ title: "Updated Title" }),
 		);
 	});
@@ -277,6 +286,7 @@ describe("noteService.updateById", () => {
 
 		expect(noteRepository.updateById).toHaveBeenCalledWith(
 			NOTE_ID,
+			USER_ID,
 			expect.objectContaining({ subjectId: null }),
 		);
 		expect(subjectRepository.findByIdAndUserId).not.toHaveBeenCalled();
@@ -290,7 +300,7 @@ describe("noteService.updateById", () => {
 
 		await noteService.updateById(USER_ID, NOTE_ID, { title: "New Title" });
 
-		const callArg = vi.mocked(noteRepository.updateById).mock.calls[0][1];
+		const callArg = vi.mocked(noteRepository.updateById).mock.calls[0][2];
 		expect(callArg).toHaveProperty("title", "New Title");
 		expect(callArg).toHaveProperty("updatedAt");
 		expect(callArg).not.toHaveProperty("content");
@@ -331,7 +341,7 @@ describe("noteService.deleteById", () => {
 			noteService.deleteById(USER_ID, NOTE_ID),
 		).resolves.toBeUndefined();
 
-		expect(noteRepository.deleteById).toHaveBeenCalledWith(NOTE_ID);
+		expect(noteRepository.deleteById).toHaveBeenCalledWith(NOTE_ID, USER_ID);
 	});
 
 	it("should throw NotFoundError when note does not exist", async () => {
