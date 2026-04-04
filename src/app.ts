@@ -12,7 +12,6 @@ import { swaggerFp } from "./plugins/swagger";
 import { routes } from "./routes";
 import { errorHandler } from "./shared/middlewares/error-handler";
 
-
 export const build = () => {
 	const app = fastify({
 		logger: process.env.NODE_ENV === "test",

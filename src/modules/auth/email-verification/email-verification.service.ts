@@ -1,7 +1,7 @@
-import { v7 } from "uuid";
 import { env } from "@/config/env";
 import { ConflictError } from "@/shared/errors/ConflictError";
 import { NotFoundError } from "@/shared/errors/NotFoundError";
+import { v7 } from "uuid";
 import { mailService } from "../../mail/mail.service";
 import { userRepository } from "../../user/user.repository";
 import { accountRepository } from "../account.repository";
@@ -24,7 +24,7 @@ export const emailVerificationService = {
 
 		await mailService.queueMail({
 			to: email,
-			subject: "Verify your email address - Helix",
+			subject: "Verify your email address - locus",
 			html: `
                 <div style="font-family: Arial, sans-serif; background-color: #f9fafb; padding: 24px; border-radius: 8px; border: 1px solid #e5e7eb; max-width: 480px; margin: auto; text-align: center;">
                     <h2 style="color: #111827; margin-bottom: 12px;">Email Verification</h2>

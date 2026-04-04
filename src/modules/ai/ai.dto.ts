@@ -17,14 +17,22 @@ export const syllabusResponse = z.object({
 export const listSyllabusResponse = z.array(syllabusResponse);
 
 export const syllabusParams = z.object({
-	id: id,
+	syllabusId: id,
 });
 
 export const uploadResponse = z.object({
-    id,
-    message: z.string()
+	id,
+	message: z.string(),
+});
+
+export const createSyllabusSchema = z.object({
+	userId,
+	fileName: z.string(),
+	status: z.enum(["PENDING", "PROCESSING", "COMPLETED", "FAILED"]),
 });
 
 export type syllabusResponseStatic = z.infer<typeof syllabusResponse>;
 export type listSyllabusResponseStatic = z.infer<typeof listSyllabusResponse>;
 export type syllabusParamsStatic = z.infer<typeof syllabusParams>;
+export type uploadResponseStatic = z.infer<typeof uploadResponse>;
+export type createSyllabusSchemaStatic = z.infer<typeof createSyllabusSchema>;

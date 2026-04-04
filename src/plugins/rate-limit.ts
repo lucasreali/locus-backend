@@ -1,7 +1,7 @@
-import fastifyRateLimit from "@fastify/rate-limit";
-import fp from "fastify-plugin";
 import { env } from "@/config/env";
 import { redis } from "@/database/redis";
+import fastifyRateLimit from "@fastify/rate-limit";
+import fp from "fastify-plugin";
 import type { FastifyTypeInstance } from "../types";
 
 export const rateLimitFp = fp(async (app: FastifyTypeInstance) => {
@@ -12,7 +12,7 @@ export const rateLimitFp = fp(async (app: FastifyTypeInstance) => {
 	await app.register(fastifyRateLimit, {
 		global: false,
 		redis: redis,
-		nameSpace: "helix-rate-limit:",
+		nameSpace: "locus-rate-limit:",
 		skipOnError: false,
 	});
 });

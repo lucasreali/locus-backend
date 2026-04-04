@@ -10,8 +10,9 @@ export const calendarEvents = pgTable("calendar_events", {
 	userId: text("user_id")
 		.notNull()
 		.references(() => users.id, { onDelete: "cascade" }),
-	syllabusId: text("syllabus_id")
-		.references(() => syllabi.id, { onDelete: "set null" }),
+	syllabusId: text("syllabus_id").references(() => syllabi.id, {
+		onDelete: "set null",
+	}),
 	title: text("title").notNull(),
 	description: text("description"),
 	dueDate: date("due_date"),

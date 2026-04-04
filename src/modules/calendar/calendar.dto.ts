@@ -29,8 +29,14 @@ export const calendarEventParams = z.object({
 export const createCalendarEventSchema = calendarEventResponse;
 
 export type calendarEventRequestStatic = z.infer<typeof calendarEventRequest>;
-export type calendarEventUpdateRequestStatic = z.infer<typeof calendarEventUpdateRequest>;
+export type calendarEventUpdateRequestStatic = z.infer<
+	typeof calendarEventUpdateRequest
+>;
 export type calendarEventResponseStatic = z.infer<typeof calendarEventResponse>;
-export type listCalendarEventResponseStatic = z.infer<typeof listCalendarEventResponse>;
+export type listCalendarEventResponseStatic = z.infer<
+	typeof listCalendarEventResponse
+>;
 export type calendarEventParamsStatic = z.infer<typeof calendarEventParams>;
-export type createCalendarEventSchemaStatic = z.infer<typeof createCalendarEventSchema>;
+export type createCalendarEventSchemaStatic = z.infer<
+	typeof createCalendarEventSchema
+>;

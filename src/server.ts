@@ -1,7 +1,7 @@
 import { build } from "./app";
 import { env } from "./config/env";
+import "./modules/ai/ai.worker";
 import "./modules/mail/mail.worker";
-import "./modules/syllabus/syllabus.worker";
 
 const app = build();
 

@@ -14,8 +14,8 @@ import {
 import { calendarService } from "./calendar.service";
 
 const queryParams = z.object({
-    startDate: z.string().optional(),
-    endDate: z.string().optional()
+	startDate: z.string().optional(),
+	endDate: z.string().optional(),
 });
 
 export const calendarController = (app: FastifyTypeInstance) => {
@@ -65,9 +65,9 @@ export const calendarController = (app: FastifyTypeInstance) => {
 			const { eventId } = req.params;
 			const { id: userId } = req.user;
 			const event = await calendarService.findById(eventId);
-            if(event.userId !== userId) {
-                throw new ForbiddenError("Forbidden");
-            }
+			if (event.userId !== userId) {
+				throw new ForbiddenError("Forbidden");
+			}
 			return rep.status(200).send(event as any);
 		},
 	);
@@ -83,7 +83,7 @@ export const calendarController = (app: FastifyTypeInstance) => {
 				security: [{ CookieAuth: [] }],
 				tags: ["calendar"],
 				description: "List all calendar events",
-                querystring: queryParams,
+				querystring: queryParams,
 				response: {
 					200: listCalendarEventResponse,
 				},
@@ -91,8 +91,12 @@ export const calendarController = (app: FastifyTypeInstance) => {
 		},
 		async (req, rep) => {
 			const { id } = req.user;
-            const { startDate, endDate } = req.query;
-			const events = await calendarService.findAllByUserId(id, startDate, endDate);
+			const { startDate, endDate } = req.query;
+			const events = await calendarService.findAllByUserId(
+				id,
+				startDate,
+				endDate,
+			);
 			return rep.status(200).send(events as any);
 		},
 	);
@@ -117,9 +121,13 @@ export const calendarController = (app: FastifyTypeInstance) => {
 		},
 		async (req, rep) => {
 			const { id } = req.user;
-            const { eventId } = req.params;
+			const { eventId } = req.params;
 			const updateData = req.body;
-			const updatedEvent = await calendarService.updateById(id, eventId, updateData);
+			const updatedEvent = await calendarService.updateById(
+				id,
+				eventId,
+				updateData,
+			);
 			return rep.status(200).send(updatedEvent as any);
 		},
 	);
@@ -133,7 +141,7 @@ export const calendarController = (app: FastifyTypeInstance) => {
 			},
 			schema: {
 				security: [{ CookieAuth: [] }],
-                params: calendarEventParams,
+				params: calendarEventParams,
 				tags: ["calendar"],
 				description: "Delete calendar event",
 				response: {
@@ -143,7 +151,7 @@ export const calendarController = (app: FastifyTypeInstance) => {
 		},
 		async (req, rep) => {
 			const { id } = req.user;
-            const { eventId } = req.params;
+			const { eventId } = req.params;
 			await calendarService.deleteById(id, eventId);
 			return rep.status(204).send(null);
 		},

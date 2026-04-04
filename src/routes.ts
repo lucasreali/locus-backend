@@ -1,10 +1,9 @@
+import { syllabusController } from "./modules/ai/ai.controller";
 import { authController } from "./modules/auth/core/auth.controller";
 import { emailVerificationController } from "./modules/auth/email-verification/email-verification.controller";
-
+import { calendarController } from "./modules/calendar/calendar.controller";
 import { subjectController } from "./modules/subject/subject.controller";
 import { userController } from "./modules/user/user.controller";
-import { calendarController } from "./modules/calendar/calendar.controller";
-import { syllabusController } from "./modules/syllabus/syllabus.controller";
 import type { FastifyTypeInstance } from "./types";
 
 export const routes = (app: FastifyTypeInstance) => {
