@@ -1,14 +1,14 @@
 import { Queue } from "bullmq";
 import { redis as connection } from "@/database/redis";
 
-export const SYLLABUS_QUEUE_NAME = "syllabus-processing";
+export const AI_QUEUE_NAME = "ai-processing";
 
-export const syllabusQueue = new Queue<{
-	syllabusId: string;
+export const aiQueue = new Queue<{
+	aiId: string;
 	userId: string;
 	filePath: string;
 	mimeType: string;
-}>(SYLLABUS_QUEUE_NAME, {
+}>(AI_QUEUE_NAME, {
 	connection,
 	defaultJobOptions: {
 		attempts: 3,

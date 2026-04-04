@@ -12,7 +12,7 @@ CREATE TABLE "calendar_events" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "syllabi" (
+CREATE TABLE "ai_uploads" (
 	"id" text PRIMARY KEY NOT NULL,
 	"user_id" text NOT NULL,
 	"file_name" text NOT NULL,
@@ -65,8 +65,8 @@ CREATE TABLE "subjects" (
 );
 --> statement-breakpoint
 ALTER TABLE "calendar_events" ADD CONSTRAINT "calendar_events_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "calendar_events" ADD CONSTRAINT "calendar_events_syllabus_id_syllabi_id_fk" FOREIGN KEY ("syllabus_id") REFERENCES "public"."syllabi"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "syllabi" ADD CONSTRAINT "syllabi_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "calendar_events" ADD CONSTRAINT "calendar_events_syllabus_id_ai_uploads_id_fk" FOREIGN KEY ("syllabus_id") REFERENCES "public"."ai_uploads"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "ai_uploads" ADD CONSTRAINT "ai_uploads_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "email_verification_tokens" ADD CONSTRAINT "email_verification_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "subjects" ADD CONSTRAINT "subjects_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

@@ -1,14 +1,14 @@
-import { ForbiddenError } from "@/shared/errors/ForbiddenError";
-import { NotFoundError } from "@/shared/errors/NotFoundError";
 import crypto from "node:crypto";
 import { createWriteStream } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { pipeline } from "node:stream/promises";
-import { syllabusQueue } from "./ai.queue";
-import { syllabusRepository } from "./ai.repository";
+import { ForbiddenError } from "@/shared/errors/ForbiddenError";
+import { NotFoundError } from "@/shared/errors/NotFoundError";
+import { aiQueue } from "./ai.queue";
+import { aiRepository } from "./ai.repository";
 
-export const syllabusService = {
+export const aiService = {
 	async upload(data: {
 		userId: string;
 		stream: NodeJS.ReadableStream;
@@ -23,14 +23,14 @@ export const syllabusService = {
 
 		await pipeline(stream, createWriteStream(filePath));
 
-		const createdStatus = await syllabusRepository.create({
+		const createdStatus = await aiRepository.create({
 			userId,
 			fileName,
 			status: "PENDING",
 		});
 
-		await syllabusQueue.add("process-syllabus", {
-			syllabusId: createdStatus.id,
+		await aiQueue.add("process-ai", {
+			aiId: createdStatus.id,
 			userId,
 			filePath,
 			mimeType,
@@ -40,28 +40,28 @@ export const syllabusService = {
 	},
 
 	async findById(userId: string, id: string) {
-		const syllabus = await syllabusRepository.findById(id);
-		if (!syllabus) {
-			throw new NotFoundError("Syllabus not found");
+		const aiRecord = await aiRepository.findById(id);
+		if (!aiRecord) {
+			throw new NotFoundError("AI record not found");
 		}
-		if (syllabus.userId !== userId) {
+		if (aiRecord.userId !== userId) {
 			throw new ForbiddenError("Forbidden");
 		}
-		return syllabus;
+		return aiRecord;
 	},
 
 	async findAllByUserId(userId: string) {
-		return await syllabusRepository.findAllByUserId(userId);
+		return await aiRepository.findAllByUserId(userId);
 	},
 
 	async deleteById(userId: string, id: string) {
-		const syllabus = await syllabusRepository.findById(id);
-		if (!syllabus) {
-			throw new NotFoundError("Syllabus not found");
+		const aiRecord = await aiRepository.findById(id);
+		if (!aiRecord) {
+			throw new NotFoundError("AI record not found");
 		}
-		if (syllabus.userId !== userId) {
+		if (aiRecord.userId !== userId) {
 			throw new ForbiddenError("Forbidden");
 		}
-		await syllabusRepository.deleteById(id);
+		await aiRepository.deleteById(id);
 	},
 };

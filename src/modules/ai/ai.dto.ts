@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createdAt, id, updatedAt, userId } from "@/shared/dtos";
 
-export const syllabusResponse = z.object({
+export const aiResponse = z.object({
 	id,
 	userId,
 	fileName: z.string(),
@@ -14,10 +14,10 @@ export const syllabusResponse = z.object({
 	updatedAt,
 });
 
-export const listSyllabusResponse = z.array(syllabusResponse);
+export const listAiResponse = z.array(aiResponse);
 
-export const syllabusParams = z.object({
-	syllabusId: id,
+export const aiParams = z.object({
+	aiId: id,
 });
 
 export const uploadResponse = z.object({
@@ -25,14 +25,14 @@ export const uploadResponse = z.object({
 	message: z.string(),
 });
 
-export const createSyllabusSchema = z.object({
+export const createAiSchema = z.object({
 	userId,
 	fileName: z.string(),
 	status: z.enum(["PENDING", "PROCESSING", "COMPLETED", "FAILED"]),
 });
 
-export type syllabusResponseStatic = z.infer<typeof syllabusResponse>;
-export type listSyllabusResponseStatic = z.infer<typeof listSyllabusResponse>;
-export type syllabusParamsStatic = z.infer<typeof syllabusParams>;
+export type aiResponseStatic = z.infer<typeof aiResponse>;
+export type listAiResponseStatic = z.infer<typeof listAiResponse>;
+export type aiParamsStatic = z.infer<typeof aiParams>;
 export type uploadResponseStatic = z.infer<typeof uploadResponse>;
-export type createSyllabusSchemaStatic = z.infer<typeof createSyllabusSchema>;
+export type createAiSchemaStatic = z.infer<typeof createAiSchema>;

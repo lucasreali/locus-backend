@@ -1,18 +1,20 @@
-import "@fastify/multipart";
 import { RATE_LIMITS } from "@/plugins/rate-limit";
 import { noContentResponse } from "@/shared/dtos";
 import { BadRequestError } from "@/shared/errors/BadRequestError";
 import { authHandler } from "@/shared/middlewares/auth-handler";
 import type { FastifyTypeInstance } from "@/types";
+import "@fastify/multipart";
 import {
-	listSyllabusResponse,
-	syllabusParams,
-	syllabusResponse,
+	aiParams,
+	aiResponse,
+	type aiResponseStatic,
+	listAiResponse,
+	type listAiResponseStatic,
 	uploadResponse,
 } from "./ai.dto";
-import { syllabusService } from "./ai.service";
+import { aiService } from "./ai.service";
 
-export const syllabusController = (app: FastifyTypeInstance) => {
+export const aiController = (app: FastifyTypeInstance) => {
 	app.post(
 		"/upload",
 		{
@@ -22,8 +24,8 @@ export const syllabusController = (app: FastifyTypeInstance) => {
 			},
 			schema: {
 				security: [{ CookieAuth: [] }],
-				tags: ["syllabus"],
-				description: "Upload syllabus/assignment PDF for AI processing",
+				tags: ["ai"],
+				description: "Upload PDF for AI processing",
 				response: {
 					202: uploadResponse,
 				},
@@ -40,21 +42,22 @@ export const syllabusController = (app: FastifyTypeInstance) => {
 				throw new BadRequestError("Only PDF files are supported");
 			}
 
-			const createdFile = await syllabusService.upload({
+			const createdFile = await aiService.upload({
 				userId,
 				stream: data.file,
 				fileName: data.filename,
 				mimeType: data.mimetype,
 			});
 
-			return rep
-				.status(202)
-				.send({ id: createdFile.id, message: "File is being processed" });
+			return rep.status(202).send({
+				id: createdFile.id,
+				message: "File is being processed",
+			});
 		},
 	);
 
 	app.get(
-		"/:syllabusId",
+		"/:aiId",
 		{
 			preHandler: authHandler,
 			config: {
@@ -62,19 +65,19 @@ export const syllabusController = (app: FastifyTypeInstance) => {
 			},
 			schema: {
 				security: [{ CookieAuth: [] }],
-				params: syllabusParams,
-				tags: ["syllabus"],
-				description: "Get syllabus processing state and status by ID",
+				params: aiParams,
+				tags: ["ai"],
+				description: "Get AI processing state and status by ID",
 				response: {
-					200: syllabusResponse,
+					200: aiResponse,
 				},
 			},
 		},
 		async (req, rep) => {
-			const { syllabusId } = req.params;
+			const { aiId } = req.params;
 			const { id: userId } = req.user;
-			const syllabus = await syllabusService.findById(userId, syllabusId);
-			return rep.status(200).send(syllabus as any);
+			const aiRecord = await aiService.findById(userId, aiId);
+			return rep.status(200).send(aiRecord as aiResponseStatic);
 		},
 	);
 
@@ -87,22 +90,22 @@ export const syllabusController = (app: FastifyTypeInstance) => {
 			},
 			schema: {
 				security: [{ CookieAuth: [] }],
-				tags: ["syllabus"],
-				description: "List all syllabi for a user",
+				tags: ["ai"],
+				description: "List all AI uploads for a user",
 				response: {
-					200: listSyllabusResponse,
+					200: listAiResponse,
 				},
 			},
 		},
 		async (req, rep) => {
 			const { id } = req.user;
-			const syllabi = await syllabusService.findAllByUserId(id);
-			return rep.status(200).send(syllabi as any);
+			const aiRecords = await aiService.findAllByUserId(id);
+			return rep.status(200).send(aiRecords as listAiResponseStatic);
 		},
 	);
 
 	app.delete(
-		"/:syllabusId",
+		"/:aiId",
 		{
 			preHandler: authHandler,
 			config: {
@@ -110,9 +113,9 @@ export const syllabusController = (app: FastifyTypeInstance) => {
 			},
 			schema: {
 				security: [{ CookieAuth: [] }],
-				params: syllabusParams,
-				tags: ["syllabus"],
-				description: "Delete syllabus",
+				params: aiParams,
+				tags: ["ai"],
+				description: "Delete AI upload",
 				response: {
 					204: noContentResponse,
 				},
@@ -120,8 +123,8 @@ export const syllabusController = (app: FastifyTypeInstance) => {
 		},
 		async (req, rep) => {
 			const { id: userId } = req.user;
-			const { syllabusId } = req.params;
-			await syllabusService.deleteById(userId, syllabusId);
+			const { aiId } = req.params;
+			await aiService.deleteById(userId, aiId);
 			return rep.status(204).send(null);
 		},
 	);

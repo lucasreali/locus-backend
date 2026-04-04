@@ -1,15 +1,15 @@
-import { accounts } from "./auth/accounts";
-import { emailVerificationTokens } from "./auth/email-verification-tokens";
-import { users } from "./auth/users";
-import { subjects } from "./subject/subjects";
-import { syllabi } from "./syllabi";
-import { calendarEvents } from "./calendar-events";
+import { aiUploads } from './ai-uploads';
+import { accounts } from './auth/accounts';
+import { emailVerificationTokens } from './auth/email-verification-tokens';
+import { users } from './auth/users';
+import { events } from './events';
+import { subjects } from './subject/subjects';
 
 export const schema = {
-	users,
-	accounts,
-	emailVerificationTokens,
-	subjects,
-	syllabi,
-	calendarEvents,
+    users,
+    accounts,
+    emailVerificationTokens,
+    subjects,
+    aiUploads,
+    events,
 };
