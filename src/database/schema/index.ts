@@ -3,6 +3,7 @@ import { accounts } from './auth/accounts';
 import { emailVerificationTokens } from './auth/email-verification-tokens';
 import { users } from './auth/users';
 import { events } from './events';
+import { notes } from './notes';
 import { subjects } from './subject/subjects';
 
 export const schema = {
@@ -12,4 +13,5 @@ export const schema = {
     subjects,
     aiUploads,
     events,
+    notes,
 };
