@@ -1,9 +1,9 @@
-import { aiController } from "./modules/ai/ai.controller";
 import { authController } from "./modules/auth/core/auth.controller";
 import { emailVerificationController } from "./modules/auth/email-verification/email-verification.controller";
 import { eventController } from "./modules/event/event.controller";
 import { noteController } from "./modules/note/note.controller";
 import { subjectController } from "./modules/subject/subject.controller";
+import { syllabusController } from "./modules/syllabus/syllabus.controller";
 import { userController } from "./modules/user/user.controller";
 import type { FastifyTypeInstance } from "./types";
 
@@ -20,6 +20,6 @@ export const routes = (app: FastifyTypeInstance) => {
 	// /calendar mirrors /events — both serve the same endpoints for client flexibility
 	app.register(eventController, { prefix: "/events" });
 	app.register(eventController, { prefix: "/calendar" });
-	app.register(aiController, { prefix: "/ai" });
+	app.register(syllabusController, { prefix: "/syllabus" });
 	app.register(noteController, { prefix: "/notes" });
 };

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { eventRepository } from "@/modules/event/event.repository";
 import { eventService } from "@/modules/event/event.service";
 import { NotFoundError } from "@/shared/errors/NotFoundError";
+import type { SyllabusEventType } from "@/modules/syllabus/syllabus.prompt";
 
 vi.mock("@/modules/event/event.repository");
 
@@ -225,6 +226,78 @@ describe("eventService.updateById", () => {
 		).rejects.toThrow(NotFoundError);
 
 		expect(eventRepository.updateById).not.toHaveBeenCalled();
+	});
+});
+
+describe("eventService.createManyFromSyllabus", () => {
+	const SYLLABUS_ID = "019746c0-0000-7000-8000-000000000099";
+
+	const mockSyllabusEvents: Array<{
+		title: string;
+		description: string | null;
+		dueDate: string | null;
+		type: SyllabusEventType;
+		courseName: string | null;
+	}> = [
+		{
+			title: "Midterm Exam",
+			description: "Covers chapters 1-5",
+			dueDate: "2026-06-01",
+			type: "exam",
+			courseName: "Algorithms",
+		},
+		{
+			title: "Project Delivery",
+			description: null,
+			dueDate: null,
+			type: "project",
+			courseName: "Algorithms",
+		},
+	];
+
+	it("should create events linked to the syllabusId and return the created records", async () => {
+		vi.mocked(eventRepository.createMany).mockResolvedValue(undefined);
+
+		const result = await eventService.createManyFromSyllabus(
+			USER_ID,
+			SYLLABUS_ID,
+			mockSyllabusEvents,
+		);
+
+		expect(result).toHaveLength(2);
+		expect(result[0]).toMatchObject({
+			userId: USER_ID,
+			syllabusId: SYLLABUS_ID,
+			title: "Midterm Exam",
+			type: "exam",
+			status: "pending",
+			courseName: "Algorithms",
+		});
+		expect(result[0].id).toBeDefined();
+		expect(result[0].createdAt).toBeInstanceOf(Date);
+		expect(eventRepository.createMany).toHaveBeenCalledOnce();
+		expect(eventRepository.createMany).toHaveBeenCalledWith(
+			expect.arrayContaining([
+				expect.objectContaining({
+					userId: USER_ID,
+					syllabusId: SYLLABUS_ID,
+					title: "Midterm Exam",
+				}),
+			]),
+		);
+	});
+
+	it("should return empty array and not call createMany when events list is empty", async () => {
+		vi.mocked(eventRepository.createMany).mockResolvedValue(undefined);
+
+		const result = await eventService.createManyFromSyllabus(
+			USER_ID,
+			SYLLABUS_ID,
+			[],
+		);
+
+		expect(result).toEqual([]);
+		expect(eventRepository.createMany).toHaveBeenCalledWith([]);
 	});
 });
 

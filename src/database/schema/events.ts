@@ -1,7 +1,7 @@
 import { date, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 import { v7 } from 'uuid';
-import { aiUploads } from './ai-uploads';
 import { users } from './auth/users';
+import { syllabusUploads } from './syllabus-uploads';
 
 export const events = pgTable('events', {
     id: text('id')
@@ -10,7 +10,7 @@ export const events = pgTable('events', {
     userId: text('user_id')
         .notNull()
         .references(() => users.id, { onDelete: 'cascade' }),
-    syllabusId: text('syllabus_id').references(() => aiUploads.id, {
+    syllabusId: text('syllabus_id').references(() => syllabusUploads.id, {
         onDelete: 'set null',
     }),
     title: text('title').notNull(),

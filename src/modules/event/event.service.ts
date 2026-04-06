@@ -2,6 +2,7 @@ import { NotFoundError } from '@/shared/errors/NotFoundError';
 import { stripUndefined } from '@/shared/utils/strip-undefined';
 import { v7 } from 'uuid';
 import type { eventRequestStatic, eventUpdateRequestStatic } from './event.dto';
+import type { SyllabusEventType } from '../syllabus/syllabus.prompt';
 import { eventRepository } from './event.repository';
 
 export const eventService = {
@@ -79,5 +80,34 @@ export const eventService = {
         }
 
         await eventRepository.deleteById(eventId);
+    },
+
+    async createManyFromSyllabus(
+        userId: string,
+        syllabusId: string,
+        events: Array<{
+            title: string;
+            description: string | null;
+            dueDate: string | null;
+            type: SyllabusEventType;
+            courseName: string | null;
+        }>,
+    ) {
+        const records = events.map((event) => ({
+            id: v7(),
+            userId,
+            syllabusId,
+            title: event.title,
+            description: event.description,
+            dueDate: event.dueDate,
+            type: event.type,
+            status: 'pending' as const,
+            courseName: event.courseName,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        }));
+
+        await eventRepository.createMany(records);
+        return records;
     },
 };
