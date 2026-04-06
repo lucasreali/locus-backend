@@ -3,6 +3,7 @@ import { emailVerificationTokens } from './auth/email-verification-tokens';
 import { users } from './auth/users';
 import { events } from './events';
 import { notes } from './notes';
+import { notifications } from './notifications';
 import { subjects } from './subject/subjects';
 import { syllabusUploads } from './syllabus-uploads';
 
@@ -14,4 +15,5 @@ export const schema = {
 	syllabusUploads,
 	events,
 	notes,
+	notifications,
 };

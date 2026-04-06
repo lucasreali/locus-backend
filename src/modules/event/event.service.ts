@@ -64,7 +64,7 @@ export const eventService = {
             updatedAt: new Date(),
         });
 
-        await eventRepository.updateById(eventId, updatedEvent);
+        await eventRepository.updateById(eventId, updatedEvent, userId);
 
         return {
             ...event,
@@ -79,7 +79,7 @@ export const eventService = {
             throw new NotFoundError('Event not found');
         }
 
-        await eventRepository.deleteById(eventId);
+        await eventRepository.deleteById(eventId, userId);
     },
 
     async createManyFromSyllabus(

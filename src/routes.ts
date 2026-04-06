@@ -2,6 +2,7 @@ import { authController } from "./modules/auth/core/auth.controller";
 import { emailVerificationController } from "./modules/auth/email-verification/email-verification.controller";
 import { eventController } from "./modules/event/event.controller";
 import { noteController } from "./modules/note/note.controller";
+import { notificationController } from "./modules/notification/notification.controller";
 import { subjectController } from "./modules/subject/subject.controller";
 import { syllabusController } from "./modules/syllabus/syllabus.controller";
 import { userController } from "./modules/user/user.controller";
@@ -17,9 +18,9 @@ export const routes = (app: FastifyTypeInstance) => {
 
 	app.register(subjectController, { prefix: "/subjects" });
 	app.register(userController, { prefix: "/users" });
-	// /calendar mirrors /events — both serve the same endpoints for client flexibility
+
 	app.register(eventController, { prefix: "/events" });
-	app.register(eventController, { prefix: "/calendar" });
 	app.register(syllabusController, { prefix: "/syllabus" });
 	app.register(noteController, { prefix: "/notes" });
+	app.register(notificationController, { prefix: "/notifications" });
 };
