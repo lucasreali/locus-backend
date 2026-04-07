@@ -20,7 +20,7 @@ export const subjectController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.WRITE,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				tags: ["subjects"],
 				description: "Create subject",
 				body: subjectRequest,
@@ -45,7 +45,7 @@ export const subjectController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.READ,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				tags: ["subjects"],
 				description: "List all subjects from authenticated user",
 				response: {
@@ -68,7 +68,7 @@ export const subjectController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.READ,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				tags: ["subjects"],
 				description: "Get subject by ID",
 				params: subjectParams,
@@ -93,7 +93,7 @@ export const subjectController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.WRITE,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				tags: ["subjects"],
 				description: "Update subject by ID",
 				params: subjectParams,
@@ -120,7 +120,7 @@ export const subjectController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.WRITE,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				tags: ["subjects"],
 				description: "Delete subject by ID",
 				params: subjectParams,

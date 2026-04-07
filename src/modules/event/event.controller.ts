@@ -29,7 +29,7 @@ export const eventController = (app: FastifyTypeInstance) => {
                 rateLimit: RATE_LIMITS.WRITE,
             },
             schema: {
-                security: [{ CookieAuth: [] }],
+                security: [{ BearerAuth: [] }],
                 tags: ['events'],
                 description: 'Create event',
                 body: eventRequest,
@@ -54,7 +54,7 @@ export const eventController = (app: FastifyTypeInstance) => {
                 rateLimit: RATE_LIMITS.READ,
             },
             schema: {
-                security: [{ CookieAuth: [] }],
+                security: [{ BearerAuth: [] }],
                 params: eventParams,
                 tags: ['events'],
                 description: 'Get event by ID',
@@ -82,7 +82,7 @@ export const eventController = (app: FastifyTypeInstance) => {
                 rateLimit: RATE_LIMITS.READ,
             },
             schema: {
-                security: [{ CookieAuth: [] }],
+                security: [{ BearerAuth: [] }],
                 tags: ['events'],
                 description: 'List all events',
                 querystring: queryParams,
@@ -111,7 +111,7 @@ export const eventController = (app: FastifyTypeInstance) => {
                 rateLimit: RATE_LIMITS.WRITE,
             },
             schema: {
-                security: [{ CookieAuth: [] }],
+                security: [{ BearerAuth: [] }],
                 params: eventParams,
                 body: eventUpdateRequest,
                 tags: ['events'],
@@ -142,7 +142,7 @@ export const eventController = (app: FastifyTypeInstance) => {
                 rateLimit: RATE_LIMITS.WRITE,
             },
             schema: {
-                security: [{ CookieAuth: [] }],
+                security: [{ BearerAuth: [] }],
                 params: eventParams,
                 tags: ['events'],
                 description: 'Delete event',

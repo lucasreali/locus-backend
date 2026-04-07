@@ -45,7 +45,7 @@ export const userController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.READ,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				params: userParams,
 				tags: ["users"],
 				description: "Get user by ID",
@@ -69,7 +69,7 @@ export const userController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.READ,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				tags: ["users"],
 				description: "List all users",
 				response: {
@@ -91,7 +91,7 @@ export const userController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.WRITE,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				body: userUpdateRequest,
 				tags: ["users"],
 				description: "Update user",
@@ -116,7 +116,7 @@ export const userController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.WRITE,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				tags: ["users"],
 				description: "Delete user",
 				response: {

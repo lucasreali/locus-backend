@@ -1,7 +1,6 @@
 import { RATE_LIMITS } from "@/plugins/rate-limit";
 import { noContentResponse } from "@/shared/dtos";
 import { authHandler } from "@/shared/middlewares/auth-handler";
-import { getCookieConfig } from "@/shared/utils/cookie-config";
 import type { FastifyTypeInstance } from "@/types";
 import {
 	authLoginRequest,
@@ -29,9 +28,7 @@ export const authController = (app: FastifyTypeInstance) => {
 			const credentials = req.body;
 			const data = await authService.login(credentials);
 
-			rep.setCookie("sessionToken", data.sessionId, getCookieConfig());
-
-			return rep.status(200).send({ user: data.user });
+			return rep.status(200).send({ user: data.user, sessionId: data.sessionId });
 		},
 	);
 
@@ -43,7 +40,7 @@ export const authController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.READ,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				tags: ["auth"],
 				description: "Validate user authentication",
 				response: {
@@ -74,13 +71,11 @@ export const authController = (app: FastifyTypeInstance) => {
 			},
 		},
 		async (req, rep) => {
-			const sessionToken = req.cookies.sessionToken;
+			const sessionToken = req.headers.authorization?.replace("Bearer ", "");
 
 			if (sessionToken) {
 				await authService.logout(sessionToken);
 			}
-
-			rep.clearCookie("sessionToken", getCookieConfig());
 
 			return rep.status(204).send(null);
 		},

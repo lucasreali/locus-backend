@@ -8,13 +8,12 @@ export const swaggerFp = fp(async (app: FastifyTypeInstance) => {
 	app.register(fastifySwagger, {
 		openapi: {
 			info: { title: "Locus", version: "0.0.1" },
-			security: [{ CookieAuth: [] }],
+			security: [{ BearerAuth: [] }],
 			components: {
 				securitySchemes: {
-					CookieAuth: {
-						type: "apiKey",
-						in: "cookie",
-						name: "sessionToken",
+					BearerAuth: {
+						type: "http",
+						scheme: "bearer",
 					},
 				},
 			},

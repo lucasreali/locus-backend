@@ -4,7 +4,6 @@ import {
 	validatorCompiler,
 	type ZodTypeProvider,
 } from "fastify-type-provider-zod";
-import { cookiesFp } from "./plugins/cookies";
 import { corsFp } from "./plugins/cors";
 import { multipartFp } from "./plugins/multipart";
 import { rateLimitFp } from "./plugins/rate-limit";
@@ -26,7 +25,6 @@ export const build = () => {
 	app.register(multipartFp);
 	app.register(rateLimitFp);
 	app.register(swaggerFp);
-	app.register(cookiesFp);
 
 	app.register(routes);
 

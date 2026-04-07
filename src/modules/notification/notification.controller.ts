@@ -16,7 +16,7 @@ export const notificationController = (app: FastifyTypeInstance) => {
 		{
 			preHandler: authHandler,
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				tags: ['notifications'],
 				description: 'SSE stream for real-time notifications',
 			},
@@ -62,7 +62,7 @@ export const notificationController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.READ,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				tags: ['notifications'],
 				description: 'List all notifications',
 				response: {
@@ -85,7 +85,7 @@ export const notificationController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.WRITE,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				params: notificationParams,
 				tags: ['notifications'],
 				description: 'Mark notification as read',

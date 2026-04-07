@@ -9,10 +9,10 @@ interface SessionData {
 }
 
 export const authHandler = async (req: FastifyRequest, _rep: FastifyReply) => {
-	const sessionId = req.cookies.sessionToken;
+	const sessionId = req.headers.authorization?.replace("Bearer ", "");
 
 	if (!sessionId) {
-		throw new UnauthorizedError("Missing authentication cookie");
+		throw new UnauthorizedError("Missing authorization token");
 	}
 
 	const sessionData = await redis.get(`session:${sessionId}`);

@@ -23,7 +23,7 @@ export const noteController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.WRITE,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				tags: ["notes"],
 				description: "Create note",
 				body: noteRequest,
@@ -48,7 +48,7 @@ export const noteController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.READ,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				params: noteParams,
 				tags: ["notes"],
 				description: "Get note by ID",
@@ -73,7 +73,7 @@ export const noteController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.READ,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				tags: ["notes"],
 				description: "List all notes",
 				querystring: noteQueryParams,
@@ -98,7 +98,7 @@ export const noteController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.WRITE,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				params: noteParams,
 				body: noteUpdateRequest,
 				tags: ["notes"],
@@ -125,7 +125,7 @@ export const noteController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.WRITE,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				params: noteParams,
 				tags: ["notes"],
 				description: "Delete note",

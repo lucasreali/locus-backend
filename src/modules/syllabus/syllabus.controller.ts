@@ -23,7 +23,7 @@ export const syllabusController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.WRITE,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				tags: ['syllabus'],
 				description: 'Upload PDF for AI processing',
 				response: {
@@ -64,7 +64,7 @@ export const syllabusController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.READ,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				params: syllabusParams,
 				tags: ['syllabus'],
 				description: 'Get syllabus processing state and status by ID',
@@ -89,7 +89,7 @@ export const syllabusController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.READ,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				tags: ['syllabus'],
 				description: 'List all syllabus uploads for a user',
 				response: {
@@ -112,7 +112,7 @@ export const syllabusController = (app: FastifyTypeInstance) => {
 				rateLimit: RATE_LIMITS.WRITE,
 			},
 			schema: {
-				security: [{ CookieAuth: [] }],
+				security: [{ BearerAuth: [] }],
 				params: syllabusParams,
 				tags: ['syllabus'],
 				description: 'Delete syllabus upload',

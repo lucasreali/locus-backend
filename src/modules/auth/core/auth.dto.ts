@@ -9,6 +9,7 @@ export const authLoginRequest = z.object({
 
 export const authLoginResponse = z.object({
 	user: userResponse,
+	sessionId: z.string(),
 });
 
 export const authValidateResponse = z.object({
