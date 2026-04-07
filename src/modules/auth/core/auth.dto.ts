@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { userResponse } from "@/modules/user/user.dto";
-import { email, id, password } from "@/shared/dtos";
+import { email, id, name, password, avatarUrl, createdAt, updatedAt } from "@/shared/dtos";
 
 export const authLoginRequest = z.object({
 	email: email,
@@ -13,7 +13,12 @@ export const authLoginResponse = z.object({
 });
 
 export const authValidateResponse = z.object({
-	id: id,
+	id,
+	name,
+	email,
+	avatarUrl,
+	createdAt,
+	updatedAt
 });
 
 export type authLoginRequestStatic = z.infer<typeof authLoginRequest>;

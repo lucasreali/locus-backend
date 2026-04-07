@@ -49,9 +49,7 @@ export const authController = (app: FastifyTypeInstance) => {
 			},
 		},
 		async (req, rep) => {
-			const { id } = req.user;
-
-			return rep.status(200).send({ id });
+			return rep.status(200).send(req.user);
 		},
 	);
 

@@ -82,6 +82,26 @@ export const authService = {
 		}
 		const sessionId = await this._createUserSession(info.users.id);
 
+		const userCacheData = {
+			id: info.users.id,
+			name: info.users.name,
+			email: info.users.email,
+			avatarUrl: info.users.avatarUrl ?? null,
+			createdAt: info.users.createdAt instanceof Date
+				? info.users.createdAt.toISOString()
+				: info.users.createdAt,
+			updatedAt: info.users.updatedAt instanceof Date
+				? info.users.updatedAt.toISOString()
+				: info.users.updatedAt,
+		};
+
+		await redis.set(
+			`user:cache:${info.users.id}`,
+			JSON.stringify(userCacheData),
+			"EX",
+			this.SESSION_EXPIRY,
+		);
+
 		return { sessionId, user: info.users };
 	},
 

@@ -8,6 +8,15 @@ interface SessionData {
 	expiresAt: string;
 }
 
+interface UserCacheData {
+	id: string;
+	name: string;
+	email: string;
+	avatarUrl: string | null;
+	createdAt: string;
+	updatedAt: string;
+}
+
 export const authHandler = async (req: FastifyRequest, _rep: FastifyReply) => {
 	const sessionId = req.headers.authorization?.replace("Bearer ", "");
 
@@ -37,5 +46,25 @@ export const authHandler = async (req: FastifyRequest, _rep: FastifyReply) => {
 		throw new UnauthorizedError("Session expired");
 	}
 
-	req.user = { id: session.userId };
+	const userCacheRaw = await redis.get(`user:cache:${session.userId}`);
+
+	if (!userCacheRaw) {
+		throw new UnauthorizedError("User session data not found");
+	}
+
+	let userData: UserCacheData;
+	try {
+		userData = JSON.parse(userCacheRaw);
+	} catch {
+		throw new UnauthorizedError("Invalid user session data");
+	}
+
+	req.user = {
+		id: userData.id,
+		name: userData.name,
+		email: userData.email,
+		avatarUrl: userData.avatarUrl,
+		createdAt: userData.createdAt,
+		updatedAt: userData.updatedAt,
+	};
 };
