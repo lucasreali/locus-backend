@@ -3,10 +3,7 @@ import { noContentResponse } from "@/shared/dtos";
 import { authHandler } from "@/shared/middlewares/auth-handler";
 import type { FastifyTypeInstance } from "@/types";
 import {
-	listNoteResponse,
-	type listNoteResponseStatic,
 	noteParams,
-	noteQueryParams,
 	noteRequest,
 	noteResponse,
 	type noteResponseStatic,
@@ -39,30 +36,6 @@ export const noteController = (app: FastifyTypeInstance) => {
 			const note = req.body;
 			const newNote = await noteService.create(id, note);
 			return rep.status(201).send(newNote as noteResponseStatic);
-		},
-	);
-
-	app.get(
-		"/grouped-by-subject",
-		{
-			preHandler: authHandler,
-			config: {
-				rateLimit: RATE_LIMITS.READ,
-			},
-			schema: {
-				security: [{ BearerAuth: [] }],
-				tags: ["notes"],
-				description:
-					"List all notes grouped by subject. Notes without a subject are returned under subject: null.",
-				response: {
-					200: notesBySubjectResponse,
-				},
-			},
-		},
-		async (req, rep) => {
-			const { id } = req.user;
-			const grouped = await noteService.findAllGroupedBySubject(id);
-			return rep.status(200).send(grouped as notesBySubjectResponseStatic);
 		},
 	);
 
@@ -101,18 +74,17 @@ export const noteController = (app: FastifyTypeInstance) => {
 			schema: {
 				security: [{ BearerAuth: [] }],
 				tags: ["notes"],
-				description: "List all notes",
-				querystring: noteQueryParams,
+				description:
+					"List all notes grouped by subject. Notes without a subject are returned under subject: null.",
 				response: {
-					200: listNoteResponse,
+					200: notesBySubjectResponse,
 				},
 			},
 		},
 		async (req, rep) => {
 			const { id } = req.user;
-			const filters = req.query;
-			const notes = await noteService.findAllByUserId(id, filters);
-			return rep.status(200).send(notes as listNoteResponseStatic);
+			const grouped = await noteService.findAllGroupedBySubject(id);
+			return rep.status(200).send(grouped as notesBySubjectResponseStatic);
 		},
 	);
 

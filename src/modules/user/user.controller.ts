@@ -2,13 +2,7 @@ import { RATE_LIMITS } from "@/plugins/rate-limit";
 import { messageResponse, noContentResponse } from "@/shared/dtos";
 import { authHandler } from "@/shared/middlewares/auth-handler";
 import type { FastifyTypeInstance } from "@/types";
-import {
-	listUserResponse,
-	userParams,
-	userRequest,
-	userResponse,
-	userUpdateRequest,
-} from "./user.dto";
+import { userRequest, userResponse, userUpdateRequest } from "./user.dto";
 import { userService } from "./user.service";
 
 export const userController = (app: FastifyTypeInstance) => {
@@ -38,30 +32,6 @@ export const userController = (app: FastifyTypeInstance) => {
 	);
 
 	app.get(
-		"/:userId",
-		{
-			preHandler: authHandler,
-			config: {
-				rateLimit: RATE_LIMITS.READ,
-			},
-			schema: {
-				security: [{ BearerAuth: [] }],
-				params: userParams,
-				tags: ["users"],
-				description: "Get user by ID",
-				response: {
-					200: userResponse,
-				},
-			},
-		},
-		async (req, rep) => {
-			const { userId } = req.params;
-			const user = await userService.findById(userId);
-			return rep.status(200).send(user);
-		},
-	);
-
-	app.get(
 		"",
 		{
 			preHandler: authHandler,
@@ -71,15 +41,16 @@ export const userController = (app: FastifyTypeInstance) => {
 			schema: {
 				security: [{ BearerAuth: [] }],
 				tags: ["users"],
-				description: "List all users",
+				description: "Get authenticated user",
 				response: {
-					200: listUserResponse,
+					200: userResponse,
 				},
 			},
 		},
-		async (_req, rep) => {
-			const users = await userService.findAll();
-			return rep.status(200).send(users);
+		async (req, rep) => {
+			const { id } = req.user;
+			const user = await userService.findById(id);
+			return rep.status(200).send(user);
 		},
 	);
 
