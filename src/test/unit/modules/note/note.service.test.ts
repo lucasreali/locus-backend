@@ -1,8 +1,12 @@
-import { NotFoundError } from "@/shared/errors/NotFoundError";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { noteRepository } from "@/modules/note/note.repository";
 import { noteService } from "@/modules/note/note.service";
 import { subjectRepository } from "@/modules/subject/subject.repository";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { NotFoundError } from "@/shared/errors/NotFoundError";
+
+type FindAllGroupedResult = Awaited<
+	ReturnType<typeof noteRepository.findAllGroupedBySubject>
+>;
 
 vi.mock("@/modules/note/note.repository");
 vi.mock("@/modules/subject/subject.repository");
@@ -13,9 +17,7 @@ const NOTE_ID = "019746c0-0000-7000-8000-000000000002";
 const SUBJECT_ID = "019746c0-0000-7000-8000-000000000004";
 
 type FindByIdResult = Awaited<ReturnType<typeof noteRepository.findById>>;
-type FindAllResult = Awaited<
-	ReturnType<typeof noteRepository.findAllByUserId>
->;
+type FindAllResult = Awaited<ReturnType<typeof noteRepository.findAllByUserId>>;
 type FindSubjectResult = Awaited<
 	ReturnType<typeof subjectRepository.findByIdAndUserId>
 >;
@@ -175,7 +177,10 @@ describe("noteService.findAllByUserId", () => {
 		const result = await noteService.findAllByUserId(USER_ID, filters);
 
 		expect(result).toEqual([mockNote]);
-		expect(noteRepository.findAllByUserId).toHaveBeenCalledWith(USER_ID, filters);
+		expect(noteRepository.findAllByUserId).toHaveBeenCalledWith(
+			USER_ID,
+			filters,
+		);
 	});
 
 	it("should return empty array when user has no notes", async () => {
@@ -330,6 +335,74 @@ describe("noteService.updateById", () => {
 	});
 });
 
+describe("noteService.findAllGroupedBySubject", () => {
+	const mockNoteWithSubject = { ...mockNote, subjectId: SUBJECT_ID };
+	const mockNoteWithoutSubject = { ...mockNote, subjectId: null };
+
+	it("should return notes grouped by subject including null group", async () => {
+		vi.mocked(noteRepository.findAllGroupedBySubject).mockResolvedValue([
+			{ notes: mockNoteWithSubject, subjects: mockSubject },
+			{ notes: mockNoteWithoutSubject, subjects: null },
+		] as FindAllGroupedResult);
+
+		const result = await noteService.findAllGroupedBySubject(USER_ID);
+
+		expect(result).toHaveLength(2);
+
+		const withSubject = result.find((g) => g.subject !== null);
+		expect(withSubject?.subject).toEqual({
+			id: SUBJECT_ID,
+			name: mockSubject.name,
+			color: mockSubject.color,
+		});
+		expect(withSubject?.notes).toHaveLength(1);
+		expect(withSubject?.notes[0].id).toBe(NOTE_ID);
+
+		const withoutSubject = result.find((g) => g.subject === null);
+		expect(withoutSubject?.notes).toHaveLength(1);
+	});
+
+	it("should return empty array when user has no notes", async () => {
+		vi.mocked(noteRepository.findAllGroupedBySubject).mockResolvedValue(
+			[] as FindAllGroupedResult,
+		);
+
+		const result = await noteService.findAllGroupedBySubject(USER_ID);
+
+		expect(result).toEqual([]);
+	});
+
+	it("should group multiple notes under the same subject", async () => {
+		const anotherNote = {
+			...mockNote,
+			id: "019746c0-0000-7000-8000-000000000099",
+			subjectId: SUBJECT_ID,
+		};
+
+		vi.mocked(noteRepository.findAllGroupedBySubject).mockResolvedValue([
+			{ notes: mockNoteWithSubject, subjects: mockSubject },
+			{ notes: anotherNote, subjects: mockSubject },
+		] as FindAllGroupedResult);
+
+		const result = await noteService.findAllGroupedBySubject(USER_ID);
+
+		expect(result).toHaveLength(1);
+		expect(result[0].notes).toHaveLength(2);
+	});
+
+	it("should call repository with correct userId", async () => {
+		vi.mocked(noteRepository.findAllGroupedBySubject).mockResolvedValue(
+			[] as FindAllGroupedResult,
+		);
+
+		await noteService.findAllGroupedBySubject(USER_ID);
+
+		expect(noteRepository.findAllGroupedBySubject).toHaveBeenCalledWith(
+			USER_ID,
+		);
+	});
+});
+
 describe("noteService.deleteById", () => {
 	it("should delete note when found and owned by user", async () => {
 		vi.mocked(noteRepository.findById).mockResolvedValue([
@@ -347,9 +420,9 @@ describe("noteService.deleteById", () => {
 	it("should throw NotFoundError when note does not exist", async () => {
 		vi.mocked(noteRepository.findById).mockResolvedValue([] as FindByIdResult);
 
-		await expect(
-			noteService.deleteById(USER_ID, NOTE_ID),
-		).rejects.toThrow(NotFoundError);
+		await expect(noteService.deleteById(USER_ID, NOTE_ID)).rejects.toThrow(
+			NotFoundError,
+		);
 
 		expect(noteRepository.deleteById).not.toHaveBeenCalled();
 	});
@@ -359,9 +432,9 @@ describe("noteService.deleteById", () => {
 			{ ...mockNote, userId: OTHER_USER_ID },
 		] as FindByIdResult);
 
-		await expect(
-			noteService.deleteById(USER_ID, NOTE_ID),
-		).rejects.toThrow(NotFoundError);
+		await expect(noteService.deleteById(USER_ID, NOTE_ID)).rejects.toThrow(
+			NotFoundError,
+		);
 
 		expect(noteRepository.deleteById).not.toHaveBeenCalled();
 	});

@@ -1,7 +1,7 @@
+import { v7 } from "uuid";
 import { subjectRepository } from "@/modules/subject/subject.repository";
 import { NotFoundError } from "@/shared/errors/NotFoundError";
 import { stripUndefined } from "@/shared/utils/strip-undefined";
-import { v7 } from "uuid";
 import type {
 	noteQueryParamsStatic,
 	noteRequestStatic,
@@ -35,7 +35,8 @@ export const noteService = {
 
 	async findById(userId: string, noteId: string) {
 		const [note] = await noteRepository.findById(noteId);
-		if (!note || note.userId !== userId) throw new NotFoundError("Note not found");
+		if (!note || note.userId !== userId)
+			throw new NotFoundError("Note not found");
 		return note;
 	},
 
@@ -64,13 +65,41 @@ export const noteService = {
 
 		const updatedNote = stripUndefined({
 			...data,
-			subjectId: data.subjectId !== undefined ? data.subjectId ?? null : undefined,
+			subjectId:
+				data.subjectId !== undefined ? (data.subjectId ?? null) : undefined,
 			updatedAt: new Date(),
 		});
 
 		await noteRepository.updateById(noteId, userId, updatedNote);
 
 		return { ...note, ...updatedNote };
+	},
+
+	async findAllGroupedBySubject(userId: string) {
+		const rows = await noteRepository.findAllGroupedBySubject(userId);
+
+		const groups = new Map<
+			string | null,
+			{
+				subject: { id: string; name: string; color: string } | null;
+				notes: (typeof rows)[number]["notes"][];
+			}
+		>();
+
+		for (const { notes, subjects } of rows) {
+			const key = notes.subjectId ?? null;
+			if (!groups.has(key)) {
+				groups.set(key, {
+					subject: subjects
+						? { id: subjects.id, name: subjects.name, color: subjects.color }
+						: null,
+					notes: [],
+				});
+			}
+			groups.get(key)?.notes.push(notes);
+		}
+
+		return Array.from(groups.values());
 	},
 
 	async deleteById(userId: string, noteId: string) {

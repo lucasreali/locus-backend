@@ -1,5 +1,5 @@
-import { createdAt, id, updatedAt, userId } from "@/shared/dtos";
 import { z } from "zod";
+import { createdAt, id, updatedAt, userId } from "@/shared/dtos";
 
 export const noteRequest = z.object({
 	title: z.string().min(1).max(255),
@@ -30,6 +30,19 @@ export const noteQueryParams = z.object({
 	offset: z.coerce.number().int().min(0).default(0),
 });
 
+export const subjectInfo = z.object({
+	id,
+	name: z.string(),
+	color: z.string(),
+});
+
+export const notesBySubjectItem = z.object({
+	subject: subjectInfo.nullable(),
+	notes: z.array(noteResponse),
+});
+
+export const notesBySubjectResponse = z.array(notesBySubjectItem);
+
 export const createNoteSchema = noteResponse;
 
 export type noteRequestStatic = z.infer<typeof noteRequest>;
@@ -39,3 +52,7 @@ export type listNoteResponseStatic = z.infer<typeof listNoteResponse>;
 export type noteParamsStatic = z.infer<typeof noteParams>;
 export type noteQueryParamsStatic = z.infer<typeof noteQueryParams>;
 export type createNoteSchemaStatic = z.infer<typeof createNoteSchema>;
+export type notesBySubjectItemStatic = z.infer<typeof notesBySubjectItem>;
+export type notesBySubjectResponseStatic = z.infer<
+	typeof notesBySubjectResponse
+>;

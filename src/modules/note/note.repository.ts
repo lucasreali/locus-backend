@@ -1,7 +1,7 @@
+import { and, desc, eq, ilike } from "drizzle-orm";
 import { db } from "@/database/db";
 import { schema } from "@/database/schema";
 import { cacheService } from "@/shared/services/cache.service";
-import { and, desc, eq, ilike } from "drizzle-orm";
 import type {
 	createNoteSchemaStatic,
 	noteQueryParamsStatic,
@@ -68,5 +68,14 @@ export const noteRepository = {
 			.where(and(eq(schema.notes.id, id), eq(schema.notes.userId, userId)));
 
 		await cacheService.del("note", id);
+	},
+
+	async findAllGroupedBySubject(userId: string) {
+		return await db
+			.select()
+			.from(schema.notes)
+			.leftJoin(schema.subjects, eq(schema.notes.subjectId, schema.subjects.id))
+			.where(eq(schema.notes.userId, userId))
+			.orderBy(desc(schema.notes.updatedAt));
 	},
 };
