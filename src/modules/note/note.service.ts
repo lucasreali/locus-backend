@@ -81,7 +81,7 @@ export const noteService = {
 		const groups = new Map<
 			string | null,
 			{
-				subject: { id: string; name: string; color: string } | null;
+				subject: { id: string; name: string; icon: string } | null;
 				notes: (typeof rows)[number]["notes"][];
 			}
 		>();
@@ -91,7 +91,7 @@ export const noteService = {
 			if (!groups.has(key)) {
 				groups.set(key, {
 					subject: subjects
-						? { id: subjects.id, name: subjects.name, color: subjects.color }
+						? { id: subjects.id, name: subjects.name, icon: subjects.icon }
 						: null,
 					notes: [],
 				});

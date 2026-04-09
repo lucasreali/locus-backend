@@ -36,7 +36,7 @@ const mockSubject = {
 	id: SUBJECT_ID,
 	userId: USER_ID,
 	name: "Mathematics",
-	color: "#FF5733",
+	icon: "Calculator",
 	createdAt: new Date("2026-01-01"),
 	updatedAt: new Date("2026-01-01"),
 };
@@ -353,7 +353,7 @@ describe("noteService.findAllGroupedBySubject", () => {
 		expect(withSubject?.subject).toEqual({
 			id: SUBJECT_ID,
 			name: mockSubject.name,
-			color: mockSubject.color,
+			icon: mockSubject.icon,
 		});
 		expect(withSubject?.notes).toHaveLength(1);
 		expect(withSubject?.notes[0].id).toBe(NOTE_ID);

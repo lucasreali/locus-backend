@@ -16,7 +16,7 @@ const mockSubject = {
 	id: SUBJECT_ID,
 	userId: USER_ID,
 	name: "Mathematics",
-	color: "#FF5733",
+	icon: "Calculator",
 	createdAt: new Date("2024-01-01"),
 	updatedAt: new Date("2024-01-01"),
 };
@@ -31,13 +31,13 @@ describe("subjectService.create", () => {
 
 		const result = await subjectService.create(USER_ID, {
 			name: "Mathematics",
-			color: "#FF5733",
+			icon: "Calculator",
 		});
 
 		expect(result).toMatchObject({
 			userId: USER_ID,
 			name: "Mathematics",
-			color: "#FF5733",
+			icon: "Calculator",
 		});
 		expect(result.id).toBeDefined();
 		expect(result.createdAt).toBeInstanceOf(Date);
@@ -47,7 +47,7 @@ describe("subjectService.create", () => {
 			expect.objectContaining({
 				userId: USER_ID,
 				name: "Mathematics",
-				color: "#FF5733",
+				icon: "Calculator",
 			}),
 		);
 	});
@@ -111,7 +111,7 @@ describe("subjectService.findById", () => {
 });
 
 describe("subjectService.updateById", () => {
-	it("should update name and color when both are provided", async () => {
+	it("should update name and icon when both are provided", async () => {
 		vi.mocked(subjectRepository.findByIdAndUserId).mockResolvedValue([
 			mockSubject,
 		]);
@@ -121,19 +121,19 @@ describe("subjectService.updateById", () => {
 
 		const result = await subjectService.updateById(USER_ID, SUBJECT_ID, {
 			name: "Physics",
-			color: "#00FF00",
+			icon: "Atom",
 		});
 
 		expect(result).toMatchObject({
 			id: SUBJECT_ID,
 			userId: USER_ID,
 			name: "Physics",
-			color: "#00FF00",
+			icon: "Atom",
 		});
 		expect(result.updatedAt).toBeInstanceOf(Date);
 	});
 
-	it("should keep original color when only name is updated", async () => {
+	it("should keep original icon when only name is updated", async () => {
 		vi.mocked(subjectRepository.findByIdAndUserId).mockResolvedValue([
 			mockSubject,
 		]);
@@ -147,11 +147,11 @@ describe("subjectService.updateById", () => {
 
 		expect(result).toMatchObject({
 			name: "Physics",
-			color: mockSubject.color,
+			icon: mockSubject.icon,
 		});
 	});
 
-	it("should keep original name when only color is updated", async () => {
+	it("should keep original name when only icon is updated", async () => {
 		vi.mocked(subjectRepository.findByIdAndUserId).mockResolvedValue([
 			mockSubject,
 		]);
@@ -160,12 +160,12 @@ describe("subjectService.updateById", () => {
 		);
 
 		const result = await subjectService.updateById(USER_ID, SUBJECT_ID, {
-			color: "#0000FF",
+			icon: "Atom",
 		});
 
 		expect(result).toMatchObject({
 			name: mockSubject.name,
-			color: "#0000FF",
+			icon: "Atom",
 		});
 	});
 
@@ -181,7 +181,7 @@ describe("subjectService.updateById", () => {
 
 		const callArg = vi.mocked(subjectRepository.updateByIdAndUserId).mock
 			.calls[0][2];
-		expect(callArg).not.toHaveProperty("color");
+		expect(callArg).not.toHaveProperty("icon");
 		expect(callArg).toHaveProperty("name", "Physics");
 		expect(callArg).toHaveProperty("updatedAt");
 	});
@@ -219,7 +219,7 @@ describe("subjectService.findAllWithNotes", () => {
 		expect(result[0]).toMatchObject({
 			id: SUBJECT_ID,
 			name: mockSubject.name,
-			color: mockSubject.color,
+			icon: mockSubject.icon,
 		});
 		expect(result[0].notes).toHaveLength(1);
 		expect(result[0].notes[0].id).toBe(mockNote.id);

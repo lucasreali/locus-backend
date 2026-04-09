@@ -1,25 +1,58 @@
 import { z } from "zod";
 import { createdAt, id, name, updatedAt, userId } from "@/shared/dtos";
 
-export const color = z
-	.string()
-	.regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Invalid HEX color");
+export const SUBJECT_ICONS = [
+	"Book",
+	"BookOpen",
+	"Calculator",
+	"Flask",
+	"Atom",
+	"Globe",
+	"MusicNotes",
+	"Palette",
+	"Code",
+	"Heart",
+	"Laptop",
+	"Pencil",
+	"Lightbulb",
+	"ChartLine",
+	"Ruler",
+	"Compass",
+	"Dna",
+	"Leaf",
+	"Buildings",
+	"Translate",
+	"Microphone",
+	"Camera",
+	"PaintBrush",
+	"Cpu",
+	"Wrench",
+	"Scales",
+	"Stethoscope",
+	"Trophy",
+	"GraduationCap",
+	"TestTube",
+	"Microscope",
+	"Function",
+] as const;
+
+export const icon = z.enum(SUBJECT_ICONS);
 
 export const subjectRequest = z.object({
 	name,
-	color,
+	icon,
 });
 
 export const subjectUpdateRequest = z.object({
 	name: name.optional(),
-	color: color.optional(),
+	icon: icon.optional(),
 });
 
 export const subjectResponse = z.object({
 	id,
 	userId,
 	name,
-	color,
+	icon,
 	createdAt,
 	updatedAt,
 });
@@ -50,12 +83,12 @@ export const createSubjectSchema = z.object({
 	id,
 	userId,
 	name,
-	color,
+	icon,
 	createdAt,
 	updatedAt,
 });
 
-export type ColorStatic = z.infer<typeof color>;
+export type IconStatic = z.infer<typeof icon>;
 export type subjectRequestStatic = z.infer<typeof subjectRequest>;
 export type subjectUpdateRequestStatic = z.infer<typeof subjectUpdateRequest>;
 export type subjectResponseStatic = z.infer<typeof subjectResponse>;

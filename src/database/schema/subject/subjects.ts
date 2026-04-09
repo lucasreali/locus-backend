@@ -12,7 +12,7 @@ export const subjects = pgTable(
 			.notNull()
 			.references(() => users.id, { onDelete: "cascade" }),
 		name: text("name").notNull(),
-		color: text("color").notNull(),
+		icon: text("icon").notNull(),
 		createdAt: timestamp("created_at").defaultNow().notNull(),
 		updatedAt: timestamp("updated_at")
 			.defaultNow()

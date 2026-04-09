@@ -15,6 +15,13 @@
       "when": 1775262489000,
       "tag": "0001_rename_ai_uploads_to_syllabus_uploads",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1744214400000,
+      "tag": "0002_replace_subject_color_with_icon",
+      "breakpoints": true
     }
   ]
 }

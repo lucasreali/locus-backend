@@ -12,7 +12,7 @@ export const subjectService = {
 			id: v7(),
 			userId,
 			name: data.name,
-			color: data.color,
+			icon: data.icon,
 			createdAt: new Date(),
 			updatedAt: new Date(),
 		};
@@ -62,7 +62,7 @@ export const subjectService = {
 			id: subject.id,
 			userId: subject.userId,
 			name: data.name ?? subject.name,
-			color: data.color ?? subject.color,
+			icon: data.icon ?? subject.icon,
 			createdAt: subject.createdAt,
 			updatedAt: new Date(),
 		};

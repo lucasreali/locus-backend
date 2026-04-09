@@ -33,7 +33,7 @@ export const noteQueryParams = z.object({
 export const subjectInfo = z.object({
 	id,
 	name: z.string(),
-	color: z.string(),
+	icon: z.string(),
 });
 
 export const notesBySubjectItem = z.object({
