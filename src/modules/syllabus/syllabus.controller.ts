@@ -38,8 +38,19 @@ export const syllabusController = (app: FastifyTypeInstance) => {
 			if (!data) {
 				throw new BadRequestError('No file uploaded');
 			}
-			if (data.mimetype !== 'application/pdf') {
-				throw new BadRequestError('Only PDF files are supported');
+
+			const ALLOWED_TYPES = [
+				'application/pdf',
+				'image/jpeg',
+				'image/jpg',
+				'image/png',
+				'image/webp',
+				'image/heic',
+				'image/heif',
+			];
+
+			if (!ALLOWED_TYPES.includes(data.mimetype)) {
+				throw new BadRequestError('Unsupported file type. Please upload a PDF or image (JPEG, PNG, WebP).');
 			}
 
 			const record = await syllabusService.upload({

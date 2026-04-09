@@ -98,11 +98,8 @@ export const syllabusWorker = new Worker(
 					courseName,
 				}));
 
-			await eventService.createManyFromSyllabus(
-				userId,
-				syllabusId,
-				normalizedEvents,
-			);
+			// Events are NOT auto-created here — the frontend will show them
+			// for user approval and call POST /events for each approved event.
 
 			await syllabusRepository.updateById(syllabusId, {
 				status: 'COMPLETED',

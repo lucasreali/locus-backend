@@ -71,9 +71,10 @@ export const authService = {
 			throw new UnauthorizedError("Invalid credentials");
 		}
 
-		if (!info.accounts.emailVerified) {
-			throw new UnauthorizedError("Please, verify your email first");
-		}
+		// TODO: Reativar quando tiver domínio próprio no Resend ou OAuth do Google
+		// if (!info.accounts.emailVerified) {
+		// 	throw new UnauthorizedError("Please, verify your email first");
+		// }
 
 		const isMatch = await compare(credentials.password, info.accounts.password);
 

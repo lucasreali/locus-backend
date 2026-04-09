@@ -10,6 +10,7 @@ export const syllabusResponse = z.object({
 	errorMessage: z.string().nullable().optional(),
 	courseName: z.string().nullable().optional(),
 	professor: z.string().nullable().optional(),
+	rawResponse: z.string().nullable().optional(),
 	createdAt,
 	updatedAt,
 });
