@@ -3,12 +3,13 @@ import { noContentResponse } from "@/shared/dtos";
 import { authHandler } from "@/shared/middlewares/auth-handler";
 import type { FastifyTypeInstance } from "@/types";
 import {
+	listNoteResponse,
+	type listNoteResponseStatic,
 	noteParams,
+	noteQueryParams,
 	noteRequest,
 	noteResponse,
 	type noteResponseStatic,
-	notesBySubjectResponse,
-	type notesBySubjectResponseStatic,
 	noteUpdateRequest,
 } from "./note.dto";
 import { noteService } from "./note.service";
@@ -74,17 +75,18 @@ export const noteController = (app: FastifyTypeInstance) => {
 			schema: {
 				security: [{ BearerAuth: [] }],
 				tags: ["notes"],
-				description:
-					"List all notes grouped by subject. Notes without a subject are returned under subject: null.",
+				description: "List all notes",
+				querystring: noteQueryParams,
 				response: {
-					200: notesBySubjectResponse,
+					200: listNoteResponse,
 				},
 			},
 		},
 		async (req, rep) => {
 			const { id } = req.user;
-			const grouped = await noteService.findAllGroupedBySubject(id);
-			return rep.status(200).send(grouped as notesBySubjectResponseStatic);
+			const filters = req.query;
+			const notes = await noteService.findAllByUserId(id, filters);
+			return rep.status(200).send(notes as listNoteResponseStatic);
 		},
 	);
 

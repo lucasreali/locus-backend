@@ -1,5 +1,5 @@
-import { createdAt, id, name, updatedAt, userId } from "@/shared/dtos";
 import { z } from "zod";
+import { createdAt, id, name, updatedAt, userId } from "@/shared/dtos";
 
 export const color = z
 	.string()
@@ -26,6 +26,22 @@ export const subjectResponse = z.object({
 
 export const listSubjectResponse = z.array(subjectResponse);
 
+export const subjectWithNotesResponse = z.array(
+	subjectResponse.extend({
+		notes: z.array(
+			z.object({
+				id,
+				userId,
+				subjectId: id.nullable(),
+				title: z.string(),
+				content: z.string(),
+				createdAt,
+				updatedAt,
+			}),
+		),
+	}),
+);
+
 export const subjectParams = z.object({
 	subjectId: id,
 });
@@ -46,3 +62,6 @@ export type subjectResponseStatic = z.infer<typeof subjectResponse>;
 export type listSubjectResponseStatic = z.infer<typeof listSubjectResponse>;
 export type subjectParamsStatic = z.infer<typeof subjectParams>;
 export type createSubjectSchemaStatic = z.infer<typeof createSubjectSchema>;
+export type subjectWithNotesResponseStatic = z.infer<
+	typeof subjectWithNotesResponse
+>;

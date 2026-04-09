@@ -1,7 +1,11 @@
-import { NotFoundError } from "@/shared/errors/NotFoundError";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { subjectRepository } from "@/modules/subject/subject.repository";
 import { subjectService } from "@/modules/subject/subject.service";
+import { NotFoundError } from "@/shared/errors/NotFoundError";
+
+type FindAllWithNotesResult = Awaited<
+	ReturnType<typeof subjectRepository.findAllWithNotes>
+>;
 
 vi.mock("@/modules/subject/subject.repository");
 
@@ -190,6 +194,83 @@ describe("subjectService.updateById", () => {
 		).rejects.toThrow(NotFoundError);
 
 		expect(subjectRepository.updateByIdAndUserId).not.toHaveBeenCalled();
+	});
+});
+
+describe("subjectService.findAllWithNotes", () => {
+	const mockNote = {
+		id: "019746c0-0000-7000-8000-000000000099",
+		userId: USER_ID,
+		subjectId: SUBJECT_ID,
+		title: "Note 1",
+		content: "<p>content</p>",
+		createdAt: new Date("2024-01-01"),
+		updatedAt: new Date("2024-01-01"),
+	};
+
+	it("should return subjects with their notes nested", async () => {
+		vi.mocked(subjectRepository.findAllWithNotes).mockResolvedValue([
+			{ subjects: mockSubject, notes: mockNote },
+		] as FindAllWithNotesResult);
+
+		const result = await subjectService.findAllWithNotes(USER_ID);
+
+		expect(result).toHaveLength(1);
+		expect(result[0]).toMatchObject({
+			id: SUBJECT_ID,
+			name: mockSubject.name,
+			color: mockSubject.color,
+		});
+		expect(result[0].notes).toHaveLength(1);
+		expect(result[0].notes[0].id).toBe(mockNote.id);
+	});
+
+	it("should group multiple notes under the same subject", async () => {
+		const anotherNote = {
+			...mockNote,
+			id: "019746c0-0000-7000-8000-000000000098",
+		};
+
+		vi.mocked(subjectRepository.findAllWithNotes).mockResolvedValue([
+			{ subjects: mockSubject, notes: mockNote },
+			{ subjects: mockSubject, notes: anotherNote },
+		] as FindAllWithNotesResult);
+
+		const result = await subjectService.findAllWithNotes(USER_ID);
+
+		expect(result).toHaveLength(1);
+		expect(result[0].notes).toHaveLength(2);
+	});
+
+	it("should return subjects with empty notes array when subject has no notes", async () => {
+		vi.mocked(subjectRepository.findAllWithNotes).mockResolvedValue([
+			{ subjects: mockSubject, notes: null },
+		] as FindAllWithNotesResult);
+
+		const result = await subjectService.findAllWithNotes(USER_ID);
+
+		expect(result).toHaveLength(1);
+		expect(result[0].notes).toEqual([]);
+	});
+
+	it("should return empty array when user has no subjects", async () => {
+		vi.mocked(subjectRepository.findAllWithNotes).mockResolvedValue(
+			[] as FindAllWithNotesResult,
+		);
+
+		const result = await subjectService.findAllWithNotes(USER_ID);
+
+		expect(result).toEqual([]);
+	});
+
+	it("should call repository with correct userId", async () => {
+		vi.mocked(subjectRepository.findAllWithNotes).mockResolvedValue(
+			[] as FindAllWithNotesResult,
+		);
+
+		await subjectService.findAllWithNotes(USER_ID);
+
+		expect(subjectRepository.findAllWithNotes).toHaveBeenCalledWith(USER_ID);
 	});
 });
 

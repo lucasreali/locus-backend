@@ -8,6 +8,8 @@ import {
 	subjectRequest,
 	subjectResponse,
 	subjectUpdateRequest,
+	subjectWithNotesResponse,
+	type subjectWithNotesResponseStatic,
 } from "./subject.dto";
 import { subjectService } from "./subject.service";
 
@@ -34,6 +36,29 @@ export const subjectController = (app: FastifyTypeInstance) => {
 			const data = req.body;
 			const subject = await subjectService.create(id, data);
 			return rep.status(201).send(subject);
+		},
+	);
+
+	app.get(
+		"/notes",
+		{
+			preHandler: authHandler,
+			config: {
+				rateLimit: RATE_LIMITS.READ,
+			},
+			schema: {
+				security: [{ BearerAuth: [] }],
+				tags: ["subjects"],
+				description: "List all subjects with their notes nested",
+				response: {
+					200: subjectWithNotesResponse,
+				},
+			},
+		},
+		async (req, rep) => {
+			const { id } = req.user;
+			const subjects = await subjectService.findAllWithNotes(id);
+			return rep.status(200).send(subjects as subjectWithNotesResponseStatic);
 		},
 	);
 

@@ -1,7 +1,7 @@
+import { and, eq } from "drizzle-orm";
 import { db } from "@/database/db";
 import { schema } from "@/database/schema";
 import { cacheService } from "@/shared/services/cache.service";
-import { and, eq } from "drizzle-orm";
 import type {
 	createSubjectSchemaStatic,
 	subjectUpdateRequestStatic,
@@ -65,6 +65,15 @@ export const subjectRepository = {
 
 		await cacheService.del("subject", subjectId);
 		await cacheService.del("subject:list", userId);
+	},
+
+	async findAllWithNotes(userId: string) {
+		return await db
+			.select()
+			.from(schema.subjects)
+			.leftJoin(schema.notes, eq(schema.notes.subjectId, schema.subjects.id))
+			.where(eq(schema.subjects.userId, userId))
+			.orderBy(schema.subjects.name);
 	},
 
 	async deleteByIdAndUserId(subjectId: string, userId: string) {

@@ -1,5 +1,5 @@
-import { NotFoundError } from "@/shared/errors/NotFoundError";
 import { v7 } from "uuid";
+import { NotFoundError } from "@/shared/errors/NotFoundError";
 import type {
 	subjectRequestStatic,
 	subjectUpdateRequestStatic,
@@ -66,6 +66,32 @@ export const subjectService = {
 			createdAt: subject.createdAt,
 			updatedAt: new Date(),
 		};
+	},
+
+	async findAllWithNotes(userId: string) {
+		const rows = await subjectRepository.findAllWithNotes(userId);
+
+		const groups = new Map<
+			string,
+			{
+				subject: (typeof rows)[number]["subjects"];
+				notes: NonNullable<(typeof rows)[number]["notes"]>[];
+			}
+		>();
+
+		for (const { subjects, notes } of rows) {
+			if (!groups.has(subjects.id)) {
+				groups.set(subjects.id, { subject: subjects, notes: [] });
+			}
+			if (notes) {
+				groups.get(subjects.id)?.notes.push(notes);
+			}
+		}
+
+		return Array.from(groups.values()).map(({ subject, notes }) => ({
+			...subject,
+			notes,
+		}));
 	},
 
 	async deleteById(userId: string, subjectId: string) {
